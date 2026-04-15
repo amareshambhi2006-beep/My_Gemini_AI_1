@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 # Render ನಿಂದ API Key ಪಡೆದುಕೊಳ್ಳುವುದು
-API_KEY = os.environ.get("GEMINI_API_KEY")
+API_KEY = os.environ.get("GEMINI API KEY")
 genai.configure(api_key=API_KEY)
 
 # ಮಾಡೆಲ್ ಸೆಟ್ ಮಾಡುವುದು
