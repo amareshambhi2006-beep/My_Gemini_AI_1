@@ -9,7 +9,7 @@ API_KEY = os.environ.get("AIzaSyChCaYwSLX9umtNUETkflkdNtpGoyKjNoA")
 genai.configure(api_key=API_KEY)
 
 # ಮಾಡೆಲ್ ಸೆಟ್ ಮಾಡುವುದು
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel(model_name="gemini-1.5-flash")
 
 # ಮೆಮೊರಿಗಾಗಿ ಗ್ಲೋಬಲ್ ಚಾಟ್ ಸೆಷನ್ ಆರಂಭಿಸುವುದು
 chat_session = model.start_chat(history=[])
