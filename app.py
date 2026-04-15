@@ -8,7 +8,7 @@ app = Flask(__name__)
 API_KEY = os.environ.get("GEMINI_API_KEY")
 if not API_KEY:
     # ಒಂದು ವೇಳೆ Render ನಲ್ಲಿ ಸೆಟ್ ಮಾಡದಿದ್ದರೆ ಇಲ್ಲಿ ನೇರವಾಗಿ ಹಾಕಿಕೊಳ್ಳಿ
-    API_KEY = "AIzaSyChCaYwSLX9umtNUETkflkdNtpGoyKjNoA"
+    API_KEY = "AIzaSyA1_nysC8xkn589OZBH3NCGuz8hZJY7f18"
 
 genai.configure(api_key=API_KEY)
 
