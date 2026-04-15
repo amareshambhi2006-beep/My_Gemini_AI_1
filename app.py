@@ -4,16 +4,16 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-# API Key ಸೆಟಪ್
+# API Key ಪಡೆಯುವುದು - ಇಲ್ಲಿ ತಪ್ಪು ಆಗದಂತೆ ಎಚ್ಚರ ವಹಿಸೋಣ
 API_KEY = os.environ.get("GEMINI_API_KEY")
-if not API_KEY:
-    # Render ನಲ್ಲಿ ಕೀ ಸಿಗದಿದ್ದರೆ ಇಲ್ಲಿರುವ ನಿಮ್ಮ ಕೀ ಬಳಸುತ್ತದೆ
-    API_KEY = "AIzaSyAQdnlD-kue71dYUH1o7U0QXEbEmM-mcj4"
+if not API_KEY or API_KEY == "None":
+    # ಒಂದು ವೇಳೆ Render ನಲ್ಲಿ ಸೆಟ್ ಮಾಡದಿದ್ದರೆ ಇಲ್ಲಿ ನೇರವಾಗಿ ನಿಮ್ಮ ಕೀ ಇರಲಿ
+    API_KEY = "AIzaSyABbA4N_xeB18hkz-zMRFB1ru_YmiJweok"
 
-# ಲೇಟೆಸ್ಟ್ API ವರ್ಷನ್ ಬಳಸಲು ಕಾನ್ಫಿಗರೇಶನ್
+# API ಕಾನ್ಫಿಗರೇಶನ್
 genai.configure(api_key=API_KEY)
 
-# ಮಾಡೆಲ್ ಸೆಟ್ಟಿಂಗ್ - ಇಲ್ಲಿ ನಿಖರವಾದ ಲೇಟೆಸ್ಟ್ ಹೆಸರು ನೀಡಲಾಗಿದೆ
+# ಮಾಡೆಲ್ ಸೆಟ್ಟಿಂಗ್ - ಇಲ್ಲಿ ಅತ್ಯಂತ ಸ್ಥಿರವಾದ ಹೆಸರನ್ನು ಬಳಸೋಣ
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 @app.route('/')
@@ -27,19 +27,23 @@ def chat():
         return jsonify({"reply": "ಏನಾದರೂ ಟೈಪ್ ಮಾಡಿ ಅಪ್ಪಾಜಿ."})
 
     try:
-        # ನೇರವಾಗಿ ಉತ್ತರ ಪಡೆಯುವ ಸರಳ ವಿಧಾನ
+        # ನೇರವಾಗಿ ಚಾಟ್ ಮಾಡುವ ಸರಳ ವಿಧಾನ
         response = model.generate_content(user_message)
         
-        # ಸರಿಯಾದ ಉತ್ತರ ಬಂದಿದೆಯೇ ಎಂದು ಪರೀಕ್ಷಿಸುವುದು
-        if response.text:
+        if response and response.text:
             return jsonify({"reply": response.text})
         else:
-            return jsonify({"reply": "ಕ್ಷಮಿಸಿ ಅಪ್ಪಾಜಿ, ಉತ್ತರ ನೀಡಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ."})
+            return jsonify({"reply": "ಕ್ಷಮಿಸಿ ಅಪ್ಪಾಜಿ, ಉತ್ತರ ಪಡೆಯಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ."})
             
     except Exception as e:
-        print(f"Error logic: {e}")
-        # ಎರರ್ ಬಂದಾಗ ಬಳಕೆದಾರರಿಗೆ ಸುಲಭವಾಗಿ ಅರ್ಥವಾಗುವ ಸಂದೇಶ
-        return jsonify({"reply": "ಸರ್ವರ್ ಸಂಪರ್ಕದಲ್ಲಿ ತೊಂದರೆಯಾಗಿದೆ, ದಯವಿಟ್ಟು 1 ನಿಮಿಷ ಬಿಟ್ಟು ಪ್ರಯತ್ನಿಸಿ ಅಪ್ಪಾಜಿ."})
+        # ಎರರ್ ಏನೆಂದು ತಿಳಿಯಲು ಪ್ರಿಂಟ್ ಮಾಡಿ (Render logs ನಲ್ಲಿ ನೋಡಬಹುದು)
+        print(f"DEBUG ERROR: {str(e)}")
+        
+        # ಒಂದು ವೇಳೆ 404 ಅಥವಾ ವರ್ಷನ್ ಸಮಸ್ಯೆ ಇದ್ದರೆ ಈ ಕೆಳಗಿನ ಮೆಸೇಜ್ ತೋರಿಸುತ್ತದೆ
+        if "404" in str(e):
+            return jsonify({"reply": "API Key ವರ್ಷನ್ ಸಮಸ್ಯೆ ಇದೆ ಅಪ್ಪಾಜಿ. ದಯವಿಟ್ಟು ಹೊಸ API Key ಕ್ರಿಯೇಟ್ ಮಾಡಿ ಅಪ್‌ಡೇಟ್ ಮಾಡಿ."})
+        
+        return jsonify({"reply": "ಸರ್ವರ್ ಇನ್ನು ರೆಡಿ ಆಗಿಲ್ಲ ಅಪ್ಪಾಜಿ, 1 ನಿಮಿಷ ಬಿಟ್ಟು 'Refresh' ಮಾಡಿ ನೋಡಿ."})
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
