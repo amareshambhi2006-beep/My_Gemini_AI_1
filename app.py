@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # Render ನಿಂದ ಕೀ ಪಡೆಯುವುದು
 key = os.environ.get("GEMINI_API_KEY")
-genai.configure(api_key=key)
+genai.configure(api_key=API_KEY)
 
 # ಮಾಡೆಲ್ ಹೆಸರು ಇಲ್ಲಿ ಬದಲಾಗಿದೆ - ಇದು ಅತ್ಯಂತ ಲೇಟೆಸ್ಟ್
 model = genai.GenerativeModel('gemini-1.5-flash-8b')
