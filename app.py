@@ -1,28 +1,42 @@
-import os
+import streamlit as st
 import google.generativeai as genai
-from flask import Flask, render_template, request, jsonify
+import os
 
-app = Flask(__name__)
-
-# ಇಲ್ಲಿ ಹೊಸದಾಗಿ ಕಾಪಿ ಮಾಡಿದ API Key ಪೇಸ್ಟ್ ಮಾಡಿ
+# Render ನಲ್ಲಿ ನಾವು ಸೆಟ್ ಮಾಡುವ API Key ಅನ್ನು ಇದು ಪಡೆದುಕೊಳ್ಳುತ್ತದೆ
 API_KEY = os.environ.get("GEMINI_API_KEY")
-genai.configure(api_key=API_KEY)
 
-# ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ ತೋರಿಸುತ್ತಿರುವ ಮಾಡೆಲ್ ಹೆಸರು ಇಲ್ಲಿದೆ
-model = genai.GenerativeModel('gemini-3-flash-preview')
+# API ಕಾನ್ಫಿಗರೇಶನ್
+if API_KEY:
+    genai.configure(api_key=API_KEY)
+    model = genai.GenerativeModel('gemini-pro')
+else:
+    st.error("API Key ಕಂಡುಬಂದಿಲ್ಲ. ದಯವಿಟ್ಟು Render Dashboard ನಲ್ಲಿ ಸೆಟ್ ಮಾಡಿ.")
+    st.stop()
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+st.title("ಅಪ್ಪಾಜಿ ಮೆಮೊರಿ ಚಾಟ್‌ಬಾಟ್")
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    user_message = request.json.get('message')
+# ಪ್ರಮುಖ ಹಂತ: ಚಾಟ್ સેಷನ್ ಅನ್ನು ಮೆಮೊರಿಯಲ್ಲಿ ಉಳಿಸುವುದು
+if "chat_session" not in st.session_state:
+    # ಇದು ಮೊದಲ ಬಾರಿ ಮಾತ್ರ રನ್ ಆಗುತ್ತದೆ
+    st.session_state.chat_session = model.start_chat(history=[])
+
+# ಹಳೆಯ ಚಾಟ್ ಹಿಸ್ಟರಿಯನ್ನು ಪರದೆಯ ಮೇಲೆ ತೋರಿಸಲು
+for message in st.session_state.chat_session.history:
+    role = "User" if message.role == "user" else "Assistant"
+    with st.chat_message(message.role):
+        st.markdown(message.parts[0].text)
+
+# ಬಳಕೆದಾರರಿಂದ ಹೊಸ ಪ್ರಶ್ನೆ ಪಡೆಯುವುದು
+if prompt := st.chat_input("ಏನಾದರೂ ಕೇಳಿ..."):
+    # ಯೂಸರ್ ಮೆಸೇಜ್ ತೋರಿಸು
+    with st.chat_message("user"):
+        st.markdown(prompt)
+    
+    # ಹಳೆಯ ಹಿಸ್ಟರಿಯನ್ನು ಒಳಗೊಂಡಿರುವ સેಷನ್ ಮೂಲಕ ಮೆಸೇಜ್ ಕಳುಹಿಸುವುದು
     try:
-        response = model.generate_content(user_message)
-        return jsonify({"reply": response.text})
+        response = st.session_state.chat_session.send_message(prompt)
+        # ಅಸಿಸ್ಟೆಂಟ್ ಉತ್ತರ ತೋರಿಸು
+        with st.chat_message("assistant"):
+            st.markdown(response.text)
     except Exception as e:
-        return jsonify({"reply": "Error: " + str(e)})
-
-if __name__ == '__main__':
-    app.run(debug=True)
+        st.error(f"Error: {e}")
