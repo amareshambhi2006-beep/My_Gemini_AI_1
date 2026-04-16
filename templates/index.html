@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appaji's AI Master</title>
+    <title>AI Master</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -116,7 +116,7 @@
 <div class="chat-container">
     <div class="header">
         <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Logo" class="logo">
-        <h1>Appaji's AI Master</h1>
+        <h1> AI Master</h1>
     </div>
 
     <div id="chat-box">
@@ -124,7 +124,7 @@
     </div>
 
     <div class="input-area">
-        <input type="text" id="user-input" placeholder="ಇಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ...">
+        <input type="text" id="user-input" placeholder="Ask anything...">
         <button onclick="sendMessage()">Send</button>
     </div>
 </div>
@@ -155,7 +155,7 @@
             chatBox.innerHTML += `<div class="message ai-msg">${data.reply}</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
         } catch (error) {
-            chatBox.innerHTML += `<div class="message ai-msg" style="color:red;">Error ಬಂತು ಅಪ್ಪಾಜಿ!</div>`;
+            chatBox.innerHTML += `<div class="message ai-msg" style="color:red;">Error</div>`;
         }
     }
 
