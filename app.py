@@ -11,7 +11,7 @@ API_KEY = os.environ.get("GEMINI_API_KEY")
 
 if not API_KEY or len(API_KEY) < 10:
     # ನಿಮ್ಮ ಹೊಸ API Key ಅನ್ನು ಇಲ್ಲಿ ಹಾಕಲೇಬೇಕು
-    API_KEY = "AIzaSyChCaYwSLX9umtNUETkflkdNtpGoyKjNoA"
+    API_KEY = "AQ.Ab8RN6K9MDL9MT4yxCGso1Uzdrv3dUna5JcRe_erAiF3rMpKdA"
 
 genai.configure(api_key=API_KEY)
 
