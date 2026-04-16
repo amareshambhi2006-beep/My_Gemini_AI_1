@@ -137,7 +137,7 @@
 
         if (message === "") return;
 
-        // User ಮೆಸೇಜ್ ತೋರಿಸುವುದು
+        
         chatBox.innerHTML += `<div class="message user-msg">${message}</div>`;
         inputField.value = "";
         chatBox.scrollTop = chatBox.scrollHeight;
@@ -151,7 +151,7 @@
 
             const data = await response.json();
             
-            // AI ರಿಪ್ಲೈ ತೋರಿಸುವುದು
+            
             chatBox.innerHTML += `<div class="message ai-msg">${data.reply}</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
         } catch (error) {
@@ -159,7 +159,7 @@
         }
     }
 
-    // Enter ಕೀ ಒತ್ತಿದಾಗ ಮೆಸೇಜ್ ಹೋಗಲು
+    
     document.getElementById('user-input').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             sendMessage();
